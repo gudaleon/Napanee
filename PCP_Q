@@ -22,10 +22,10 @@ x<-data.frame(x)
 #code
 TimeAll=as.integer(365.25*49) #we create sequence of time data for 49 years in daily scale from 1970s till Dec. 31, 2018
 df_timeAll <- data.frame(date1 = seq(as.Date('1970-01-01'),by = 'day', len =TimeAll))
-all missing values will receive NA, which we shall change later for NAN for Winbugs use.
+#all missing values will receive NA, which we shall change later for NAN for Winbugs use.
 
 5. Using primary ID column you can merge it with  downloaded data from each downloaded station.
-   Also rename columne names to include station ID if necessary.
+   Also rename columne  to include station ID if necessary.
    
 # merge two data frames by date column "ID"
 total <- merge(df_timeAll,df_Hydat02EC005,by="PK",all.x = TRUE)
