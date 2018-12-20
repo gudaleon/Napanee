@@ -24,13 +24,13 @@ TimeAll=as.integer(365.25*49) #we create sequence of time data for 49 years in d
 df_timeAll <- data.frame(date1 = seq(as.Date('1970-01-01'),by = 'day', len =TimeAll))
 #all missing values will receive NA, which we shall change later for NAN for Winbugs use.
 
-5. Using primary ID column you can merge it with  downloaded data from each downloaded station.
-   Also rename columne  to include station ID if necessary.
+#5. Using primary ID column you can merge it with  downloaded data from each downloaded station.
+#   Also rename columne  to include station ID if necessary.
    
 # merge two data frames by date column "ID"
 total <- merge(df_timeAll,df_Hydat02EC005,by="PK",all.x = TRUE)
 
-6. Save the dataframe as an object for use in Winbugs : 
+#6. Save the dataframe as an object for use in Winbugs : 
 dput(total, file = "PCP_Q", control = c("keepNA", "keepInteger", "niceNames", "showAttributes"))
 
 #
