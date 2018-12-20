@@ -40,7 +40,7 @@ dget(file, keep.source = FALSE)
 
 # downloading flows
 
-HydatStn <- c("02HM002", "02HM007","02HM001","02HM010", "02HL102","02HM003", "02HE003", "02HE001", "02HM011", "02HM006", "02HM005", "02LA02302LA017", "02KF016")
+HydatStn <- c("02HM002", "02HM007","02HM001","02HM010", "02HL102","02HM003", "02HE003", "02HE001", "02HM011", "02HM006", "02HM005", "02LA017", "02KF016")
 
 total <- data.frame(date1 = seq(as.Date('1970-01-01'),by = 'day', len =TimeAll))
 names(total)[1] <- 'Date'
