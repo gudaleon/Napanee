@@ -38,6 +38,20 @@ dput(total, file = "PCP_Q", control = c("keepNA", "keepInteger", "niceNames", "s
 #
 dget(file, keep.source = FALSE)
 
+# downloading flows
+add_flow <- function(stnNo,total)
+{
+  temp_q <- hy_daily_flows(station_number = stnNo, start_date = "1970-01-01", end_date = "2018-12-31")
+  names(temp_q)[4] <- stnNo
+  temp_q$STATION_NUMBER <- NULL
+  temp_q$Parameter <- NULL
+  temp_q$Symbol <- NULL
+  total <- merge(total,temp_q,by = "Date",all.x = TRUE)
+  return(total)
+}
+
+stnNo <- "02HM003"
+total<-add_flow(stnNo,total)
 
 
 
