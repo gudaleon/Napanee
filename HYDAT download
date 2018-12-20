@@ -4,3 +4,7 @@ library("tidyhydat")
 library("dplyr")
 download_hydat("")
 1
+#Error in utils::unzip(tmp, exdir = dl_hydat_here, overwrite = TRUE) : 
+  'exdir' does not exist
+outPath <- "Y:/Folders/MyFolder"
+hy_daily_flows(station_number = c("02HM002", "02HM007", "O2HM004","02HM001","02HM010", "02HL102","02HM003", "02HE003", "02HE001", "02HM011", "02HM006", "02HM005", "02KF020", "02LA02302LA017", "02KF016"))
