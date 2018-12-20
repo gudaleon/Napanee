@@ -75,6 +75,14 @@ round(naData[3,],2)
 
 #Extration of weather: 
 
+install.packages("weathercan")
+library("weathercan")
+weatherstn<-c("TRENTON A", "BELLEVILLE", "BLOOMFIELD", "PICTON", "CRESSY", "KINGSTON A", "CATARAQUI TS", "HARTINGTON", "GODFREY")
+TimeAll=as.integer(365.25*49) #we create sequence of time data for 49 years in daily scale from 1970s till Dec. 31, 2018
+df_timeAll <- data.frame(date1 = seq(as.Date('1970-01-01'),by = 'day', len =TimeAll))
+Final <-data.frame(date1 = seq(as.Date('1970-01-01'),by = 'day', len =TimeAll))
+
+
 
 
 
