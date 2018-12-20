@@ -16,7 +16,7 @@ devtools::install_github("paleolimbot/hydatr")
 
 #Important - data should be used as data.frames, so use conversion statement :
 x<-data.frame(x)
-Hello Aisha!
+Hello Alex!
 5. Prepare a column for  dates 1970-1-1 till today - it will server as a primary ID for connect with downloaded data from different time periods .
 
 #code
