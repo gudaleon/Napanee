@@ -82,6 +82,16 @@ TimeAll=as.integer(365.25*49) #we create sequence of time data for 49 years in d
 df_timeAll <- data.frame(date1 = seq(as.Date('1970-01-01'),by = 'day', len =TimeAll))
 Final <-data.frame(date1 = seq(as.Date('1970-01-01'),by = 'day', len =TimeAll))
 
+add_weather <- function(stnNa,final)
++ {
++ kam_q <- weather_dl(station_ids = stnNa, start_date = "1970-01-01", end_date = "2018-12-31")
++ names(kam_q)[4] <- stnNa
++ kam_q$station_name <-NULL
++ kam_q&Parameter <-NULL
++ kam_q&Symbol <-NULL
++ final <-merge (final, kam_q, by = "Date", all.x=TRUE)
++ return (final)
++ }
 
 
 
