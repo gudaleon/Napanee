@@ -69,3 +69,12 @@ for (i in 1:NCOL(total)) {
 naData[1,i]<-nrow(total)
 naData[2,i]<-sum(is.na(total[,i]))
 naData[3,i]<-(naData[1,i]-naData[2,i])/(naData[1,i]}
+#rounding the number of existing values as ration (1=100%).
+round(naData[3,],2)
+#######
+
+Extration of weather: 
+
+
+
+
