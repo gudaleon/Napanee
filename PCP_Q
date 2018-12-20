@@ -73,7 +73,7 @@ naData[3,i]<-(naData[1,i]-naData[2,i])/(naData[1,i]}
 round(naData[3,],2)
 #######
 
-Extration of weather: 
+#Extration of weather: 
 
 
 
