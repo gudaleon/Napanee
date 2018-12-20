@@ -50,8 +50,14 @@ add_flow <- function(stnNo,total)
   return(total)
 }
 
-stnNo <- "02HM003"
-total<-add_flow(stnNo,total)
+HydatStn <- c("02HM002", "02HM007","02HM001","02HM010", "02HL102","02HM003", "02HE003", "02HE001", "02HM011", "02HM006", "02HM005", "02LA02302LA017", "02KF016")
+
+for (i in 1:length(HydatStn)) {
+     print(HydatStn[i])
+     stnNo <- HydatStn[i]
+    total <- add_flow(stnNo,total) }
+
+
 
 
 
