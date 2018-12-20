@@ -50,14 +50,23 @@ add_flow <- function(stnNo,total)
   return(total)
 }
 
-HydatStn <- c("02HM002", "02HM007","02HM001","02HM010", "02HL102","02HM003", "02HE003", "02HE001", "02HM011", "02HM006", "02HM005", "02LA02302LA017", "02KF016")
+
+total <- data.frame(date1 = seq(as.Date('1970-01-01'),by = 'day', len =TimeAll))
+names(total)[1] <- 'Date'
+
+add_flow <- function(stnNo,total)
+{
+  temp_q <- tidyhydat::hy_daily_flows(station_number = stnNo, start_date = "1970-01-01", end_date = "2018-12-31")
+  names(temp_q)[4] <- stnNo
+  temp_q$STATION_NUMBER <- NULL
+  temp_q$Parameter <- NULL
+  temp_q$Symbol <- NULL
+  total <- merge(total,temp_q,by = "Date",all.x = TRUE)
+  return(total)
+}
+
 
 for (i in 1:length(HydatStn)) {
-     print(HydatStn[i])
-     stnNo <- HydatStn[i]
-    total <- add_flow(stnNo,total) }
-
-
-
-
-
+  print(HydatStn[i])
+  stnNo <- HydatStn[i]
+  total <- add_flow(stnNo,total) }
