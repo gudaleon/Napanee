@@ -77,7 +77,8 @@ round(naData[3,],2)
 
 install.packages("weathercan")
 library("weathercan")
-weatherstn<-c("TRENTON A", "BELLEVILLE", "BLOOMFIELD", "PICTON", "CRESSY", "KINGSTON A", "CATARAQUI TS", "HARTINGTON", "GODFREY")
+#weatherstn<-c("TRENTON A", "BELLEVILLE", "BLOOMFIELD", "PICTON", "CRESSY", "KINGSTON A", "CATARAQUI TS", "HARTINGTON", "GODFREY")
+weatherstn<-c(5126, 4859, 4860, 4861, 4862, 4863, 5005, 5006, 4911, 7671, 4295, 52985, 50428, 4242, 4287, 4284) #unique EC station ids
 TimeAll=as.integer(365.25*49) #we create sequence of time data for 49 years in daily scale from 1970s till Dec. 31, 2018
 df_timeAll <- data.frame(date1 = seq(as.Date('1970-01-01'),by = 'day', len =TimeAll))
 Final <-data.frame(date1 = seq(as.Date('1970-01-01'),by = 'day', len =TimeAll))
