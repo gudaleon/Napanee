@@ -94,6 +94,12 @@ add_weather <- function(stnNa,final)
 + return (final)
 + }
 
+##################
+#weather data
+#extract a list of weather stations
 
-
+StationID<- rclimateca::ec_climate_locations_all
+#plot stations by stationID 
+ write.csv(list,file = "weatherStn.csv")
+#select statons of interest by stationID
 
