@@ -141,5 +141,5 @@ names(weatherstn) <- c(Stn_names)
 for (i in 1:length(HydatStn)) {
   print(HydatStn[i])
   stnNo <- HydatStn[i]
-  total <- add_flow(stnNo,total) }
+  total <- add_pcp(stnNo,total) }
 
