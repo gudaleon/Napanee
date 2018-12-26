@@ -62,6 +62,8 @@ for (i in 1:length(HydatStn)) {
   stnNo <- HydatStn[i]
   total <- add_flow(stnNo,total) }
 
+dput(total,file="total.dat")
+
 #Assess the amount of missing values:
 naData<-matrix(0, nrow=3, ncol=ncol(total))
 
@@ -93,6 +95,9 @@ add_weather <- function(stnNa,final)
 + final <-merge (final, kam_q, by = "Date", all.x=TRUE)
 + return (final)
 + }
+
+
+
 
 ##################
 #weather data
