@@ -145,4 +145,5 @@ for (i in 1:length(weatherstn)) {
   stnNo <- weatherstn[i]
   total <- add_pcp(stnNo,total) }
 
-
+getwd()
+total<-dget(total, keep.source = FALSE)
