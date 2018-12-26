@@ -126,7 +126,7 @@ datePcpc$PCP <- kam_q$total_precip
 
 ===== Dec.26 2018 ====
 getwd()
-total<-dget(total, keep.source = FALSE)
+total<-dget(file="total.dat", keep.source = FALSE)
 
 
 Adding pcp as a function
