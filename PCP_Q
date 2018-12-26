@@ -128,9 +128,20 @@ datePcpc$PCP <- kam_q$total_precip
 getwd()
 total<-dget(file="total.dat", keep.source = FALSE)
 
+#extract stationID (internal ID of Weather Canada)  
+StationID <- rclimateca::ec_climate_locations_all
+write.csv(StationID,file = "StationID_Clima.csv")
+#plot in ArcGIS for further analysis and clipping stations of interest
+#read a table with stations of interest into R
+BoQ_Weather_Stn <- read.table(file = "BoQ_Weather_Stn.txt")
+list <- data.frame(BoQ_Weather_Stn)
 
-Adding pcp as a function
-#function
+weatherstn<-c(5126,30723, 4859, 4860, 4861, 4862,4863, 5005, 5006, 4911,7671, 4295,  50428,52985, 4242, 4287, 4284) #unique EC station ids
+Stn_names<- c("TRENTON A", "TRENTON AWOS", "BELLEVILLE", "BELLEVILLE OWRC", "BELLEVILLE PAR LAB","BLOOMFIELD", "BLOOMFIELD WEST", "PICTON", "PICTON A", "CRESSY", "KINGSTON (AUT)", "KINGSTON A1", "KINGSTON A2", "KINGSTON A3", "CATARAQUI TS", "HARTINGTON", "GODFREY")
+names(weatherstn) <- c(Stn_names)
+  
+  
+#Adding pcp as a function
 add_pcp <- function(stnNo,total)
 {
   temp_q <- weather_dl(station_ids = stnNo, start = "1970-01-01", end = "2018-12-24", interval="day", string_as = NULL)
@@ -143,17 +154,7 @@ add_pcp <- function(stnNo,total)
   total <- merge(total,temp_q,by = "Date",all.x = TRUE)
   return(total)
   }
-#extract stationID (internal ID of Weather Canada)  
-StationID <- rclimateca::ec_climate_locations_all
-write.csv(StationID,file = "StationID_Clima.csv")
-#plot in ArcGIS for further analysis and clipping stations of interest
-#read a table with stations of interest into R
-BoQ_Weather_Stn <- read.table(file = "BoQ_Weather_Stn.txt")
-list <- data.frame(BoQ_Weather_Stn)
-
-weatherstn<-c(5126,30723, 4859, 4860, 4861, 4862,4863, 5005, 5006, 4911,7671, 4295,  50428,52985, 4242, 4287, 4284) #unique EC station ids
-Stn_names<- c("TRENTON A", "TRENTON AWOS", "BELLEVILLE", "BELLEVILLE OWRC", "BELLEVILLE PAR LAB","BLOOMFIELD", "BLOOMFIELD WEST", "PICTON", "PICTON A", "CRESSY", "KINGSTON (AUT)", "KINGSTON A1", "KINGSTON A2", "KINGSTON A3", "CATARAQUI TS", "HARTINGTON", "GODFREY")
-names(weatherstn) <- c(Stn_names)
+  
   
 #actual processing a list of stations
 for (i in 1:length(weatherstn)) {
