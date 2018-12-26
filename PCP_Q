@@ -139,7 +139,7 @@ names(weatherstn) <- c(Stn_names)
   
 #actual processing a list of stations
 for (i in 1:length(weatherstn)) {
-  print(weatherStn[i])
+  print(weatherstn[i])
   stnNo <- weatherstn[i]
   total <- add_pcp(stnNo,total) }
 
