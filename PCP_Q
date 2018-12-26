@@ -120,6 +120,7 @@ datePcpc$PCP <- kam_q$total_precip
 
 
 =====
+
 Adding pcp as a function
 #function
 add_pcp <- function(stnNo,total)
@@ -131,7 +132,11 @@ add_pcp <- function(stnNo,total)
   temp_q$Symbol <- NULL
   total <- merge(total,temp_q,by = "Date",all.x = TRUE)
   return(total)
-}
+  }
+weatherstn<-c(5126,30723, 4859, 4860, 4861, 4862,4863, 5005, 5006, 4911,7671, 4295,  50428,52985, 4242, 4287, 4284) #unique EC station ids
+Stn_names<- c("TRENTON A", "TRENTON AWOS", "BELLEVILLE", "BELLEVILLE OWRC", "BELLEVILLE PAR LAB","BLOOMFIELD", "BLOOMFIELD WEST", "PICTON", "PICTON A", "CRESSY", "KINGSTON (AUT)", "KINGSTON A1", "KINGSTON A2", "KINGSTON A3", "CATARAQUI TS", "HARTINGTON", "GODFREY")
+names(weatherstn) <- c(Stn_names)
+  
 #actual processing a list of stations
 for (i in 1:length(HydatStn)) {
   print(HydatStn[i])
