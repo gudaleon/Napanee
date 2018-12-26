@@ -131,6 +131,7 @@ add_pcp <- function(stnNo,total)
   #temp_q <-temp_q[,c("station_name", "station_id", "date", "total_precip", "total_rain", "total_snow")]
   temp_q <-temp_q[,c("date", "total_precip")]
   names(temp_q) <- c("Date",stnNo)
+  #names(temp_q) <- c("Date",paste0("tot_pcp_",stnNo))
   total <- merge(total,temp_q,by = "Date",all.x = TRUE)
   return(total)
   }
