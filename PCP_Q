@@ -119,7 +119,10 @@ datePcpc <- data.frame(kam_q[,11])
 datePcpc$PCP <- kam_q$total_precip
 
 
-=====
+===== Dec.26 2018 ====
+getwd()
+total<-dget(total, keep.source = FALSE)
+
 
 Adding pcp as a function
 #function
@@ -145,5 +148,4 @@ for (i in 1:length(weatherstn)) {
   stnNo <- weatherstn[i]
   total <- add_pcp(stnNo,total) }
 
-getwd()
-total<-dget(total, keep.source = FALSE)
+
