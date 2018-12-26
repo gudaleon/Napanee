@@ -101,6 +101,9 @@ add_weather <- function(stnNa,final)
 StationID<- rclimateca::ec_climate_locations_all
 #plot stations by stationID 
  write.csv(list,file = "weatherStn.csv")
+ 
+ 
+
 #select statons of interest by stationID
 
 #######
@@ -114,4 +117,22 @@ kam_q <- weathercan::weather_dl(station_ids = stn[1], interval = "day", start = 
 kam_q <- data.frame(kam_q)
 datePcpc <- data.frame(kam_q[,11])
 datePcpc$PCP <- kam_q$total_precip
+
+
+=====
+Adding pcp as a function
+add_pcp <- function(stnNo,total)
+{
+  temp_q <- tidyhydat::hy_daily_flows(station_number = stnNo, start_date = "1970-01-01", end_date = "2018-12-31")
+  names(temp_q)[4] <- stnNo
+  temp_q$STATION_NUMBER <- NULL
+  temp_q$Parameter <- NULL
+  temp_q$Symbol <- NULL
+  total <- merge(total,temp_q,by = "Date",all.x = TRUE)
+  return(total)
+}
+for (i in 1:length(HydatStn)) {
+  print(HydatStn[i])
+  stnNo <- HydatStn[i]
+  total <- add_flow(stnNo,total) }
 
