@@ -138,8 +138,9 @@ Stn_names<- c("TRENTON A", "TRENTON AWOS", "BELLEVILLE", "BELLEVILLE OWRC", "BEL
 names(weatherstn) <- c(Stn_names)
   
 #actual processing a list of stations
-for (i in 1:length(HydatStn)) {
-  print(HydatStn[i])
-  stnNo <- HydatStn[i]
+for (i in 1:length(weatherstn)) {
+  print(weatherStn[i])
+  stnNo <- weatherstn[i]
   total <- add_pcp(stnNo,total) }
+
 
