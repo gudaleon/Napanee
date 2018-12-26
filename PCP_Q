@@ -121,6 +121,7 @@ datePcpc$PCP <- kam_q$total_precip
 
 =====
 Adding pcp as a function
+#function
 add_pcp <- function(stnNo,total)
 {
   temp_q <- tidyhydat::hy_daily_flows(station_number = stnNo, start_date = "1970-01-01", end_date = "2018-12-31")
@@ -131,6 +132,7 @@ add_pcp <- function(stnNo,total)
   total <- merge(total,temp_q,by = "Date",all.x = TRUE)
   return(total)
 }
+#actual processing a list of stations
 for (i in 1:length(HydatStn)) {
   print(HydatStn[i])
   stnNo <- HydatStn[i]
