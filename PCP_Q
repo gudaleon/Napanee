@@ -178,7 +178,7 @@ water_year <- function(dates, start_month=10) {
   # Return the water year
 
 wateryear <- water_year(dates,10)
-#specify that Oct marks the first year of the hydrological year, and sept is therefore the last year. 
+#specify that Oct marks the first month of the hydrological year, and sept therefore marks the last month. 
 
 total = cbind(total, wateryear)
 #add the hydrological year as a column in the dataframe
