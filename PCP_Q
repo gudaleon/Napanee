@@ -162,22 +162,26 @@ for (i in 1:length(weatherstn)) {
   stnNo <- weatherstn[i]
   total <- add_pcp(stnNo,total) }
   
-##### 2018-12-27 
-#creating hydrological year function
-HydroYear <- function(dates, start_month=9) {
-  # Convert dates into POSIXlt
+#####
+dates <- total$Date
+#.Define a new variable(dates) by using date column
+water_year <- function(dates, start_month=10) {
+  # Define a function (water_year) from October to September
   dates.posix = as.POSIXlt(dates)
-  # Year offset
+  # Convert dates into POSIXlt
   offset = ifelse(dates.posix$mon >= start_month - 1, 1, 0)
-  # Water year
+  # Year offset
   adj.year = dates.posix$year + 1900 + offset
-  # Return the water year
+  # Water year
   adj.year
 }
+  # Return the water year
 
-# Display the function output 
-HydroYear(total, 3)
+wateryear <- water_year(dates,10)
+#specify that Oct marks the first year of the hydrological year, and sept is therefore the last year. 
 
-# Combine the input and output vectors in a dataframe
-total3 = data.frame(total, HydroYear=HydroYear(total, 3))
+total = cbind(total, wateryear)
+#add the hydrological year as a column in the dataframe
+
+
 
