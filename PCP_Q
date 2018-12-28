@@ -111,7 +111,7 @@ StationID<- rclimateca::ec_climate_locations_all
 
 #select statons of interest by stationID
 
-#######
+##################
 
 #Extract all stations:
 StationID <- rclimateca::ec_climate_locations_all
@@ -162,7 +162,7 @@ for (i in 1:length(weatherstn)) {
   stnNo <- weatherstn[i]
   total <- add_pcp(stnNo,total) }
   
-#####
+################## Dec 27, 2018
 dates <- total$Date
 #.Define a new variable(dates) by using date column
 water_year <- function(dates, start_month=10) {
