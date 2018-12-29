@@ -189,3 +189,59 @@ total= cbind(total, Month)
 #Add Month to the df
 
 
+getwd()
+QPCP <- data.frame(dget(file = "total2.dat"))
+library(lubridate)
+
+QPCP$Month <- lubridate::month(QPCP$Date)
+QPCP$Year <- lubridate::year(QPCP$Date)
+#QPCP$YearWater <- 0
+library(dplyr)
+# QPCP$YearWater <- QPCP %>% mutate(Year_water = ifelse(.$Month %in% 6:12, .$Year, .$Year - 1))
+#
+#rm(QPCP)
+# adding water year /hydrological year
+QPCP <- QPCP %>% mutate(Year_water = ifelse(.$Month %in% 1:6, .$Year + 1, .$Year))
+#adding growth period : 1- yes, 0 - no.
+QPCP <- QPCP %>% mutate(PeriodGrowth = ifelse(.$Month %in% 6:10, 1, 0))
+
+QPCP %>%
+  group_by(.$Year_water)
+  summarise_all(funs(sum(!is.na(.)))) -> qpcp.totCount #-> qpcp.totCount
+
+  QPCP %>% group_by(.$Year_water) %>% summarise_all(funs(sum(!is.na(.)))) -> pivot.CountWaterYear
+
+  QPCP %>% filter(.$PeriodGrowth == 1) %>% group_by(.$Year_water) %>% summarise_all(funs(sum(!is.na(.)))) -> pivot.CountGrowth
+  pivot.CountGrowth <- data.frame(pivot.CountGrowth)
+  pivot.Growth.Binary <- data.frame(pivot.CountGrowth)
+  pivot.Growth.Binary[pivot.Growth.Binary != 153] <- 0
+  pivot.Growth.Binary[pivot.Growth.Binary == 153] <- 1
+  pivot.Growth.Binary$Year_water <- pivot.CountGrowth$..Year_water
+  pivot.Growth.Binary <- data.frame(subset(pivot.Growth.Binary,pivot.Growth.Binary$PeriodGrowth == 1))
+
+  colNames <- colnames(pivot.Growth.Binary)
+  write.csv(colNames,file = "colNames.csv")
+
+  #pivot.Growth.Binary %>% select(.$Year_water,.$X02HM002.x,.$X5126) %>% filter(.$X02HM002.x == 1 & .$X5126 == 1)
+  library(dplyr)
+  pivot.Growth.Binary  %>% select_(.dots = c("X02HM002.x","X5126","Year_water")) %>% filter(.$X02HM002.x == 1 & .$X5126 == 1) -> dateTemp
+  yearTemp <- dateTemp$Year_water
+
+# now we need to filter data from those years in yearTemp
+QPCP %>% filter(.$Year_water %in% dateTemp$Year_water) -> subsetTemp
+subsetTemp$ln_q_X02HM002 <- log10(subsetTemp$X02HM002.x + 0.001)
+library(zoo)
+library(DataCombine)
+
+subsetTemp = subsetTemp %>%
+  mutate(pcp_5126_2d = rollmean(x = .$X5126, 2, align = "right", fill = NA))
+subsetTemp$ln_pcp_5126_2d <- log10(subsetTemp$pcp_5126_2d + 0.001)
+subsetTemp %>% select(ln_pcp_5126_2d, ln_q_X02HM002) %>% filter(.$ln_pcp_5126_2d !=-3) -> dataPlot
+
+library(reshape2)
+input.subsetTemp <- melt(dataPlot)
+library(gcookbook)
+sp <- ggplot(dataPlot, aes(x = dataPlot$ln_pcp_5126_2d , y = dataPlot$ln_q_X02HM002)) + geom_point(shape = 1, alpha = 1/4, position = position_jitter(width = 1, height = 1)) + geom_smooth(color = "red") 
+  #stat_smooth(method = lm, se = FALSE, colour = "black")
+sp
+ggsave(sp, filename = "5126_2d vs 02HM002.png")
