@@ -1,8 +1,6 @@
-
-Instruction for Downloading Monitoring Data:
-
-1.register at GitHub under university login, indicate a student status to receive free membership.
-2. R libraries to download data from Hydat and Weather Canada are at GitHub. 
+# Instruction to Download Monitoring Data for Canadian watersheds:
+#1.register at GitHub under university login, indicate a student status to receive free membership.
+#2. R libraries to download data from Hydat and Weather Canada are stored at GitHub. 
 
 install.packages("devtools") # If not already installed
 devtools::install_github("ropensci/weathercan") 
@@ -19,7 +17,7 @@ HydatStn<-c("02HM002", "02HM007", "O2HM004","02HM001","02HM010", "02HL102","02HM
 #Important - data should be used as data.frames, so use conversion statement :
 x<-data.frame(x)
 
-5. Prepare a column for  dates 1970-1-1 till today - it will server as a primary ID for connect with downloaded data from different time periods .
+#5. Prepare a column for  dates 1970-1-1 till today - it will server as a primary ID for connect with downloaded data from different time periods .
 
 #code
 TimeAll=as.integer(365.25*49) #we create sequence of time data for 49 years in daily scale from 1970s till Dec. 31, 2018
@@ -96,9 +94,6 @@ add_weather <- function(stnNa,final)
 + return (final)
 + }
 
-
-
-
 ##################
 #weather data
 #extract a list of weather stations
@@ -107,8 +102,6 @@ StationID<- rclimateca::ec_climate_locations_all
 #plot stations by stationID 
  write.csv(list,file = "weatherStn.csv")
  
- 
-
 #select statons of interest by stationID
 
 ##################
@@ -122,7 +115,6 @@ kam_q <- weathercan::weather_dl(station_ids = stn[1], interval = "day", start = 
 kam_q <- data.frame(kam_q)
 datePcpc <- data.frame(kam_q[,11])
 datePcpc$PCP <- kam_q$total_precip
-
 
 ===== Dec.26 2018 ====
 getwd()
@@ -140,12 +132,10 @@ weatherstn<-c(5126,30723, 4859, 4860, 4861, 4862,4863, 5005, 5006, 4911,7671, 42
 Stn_names<- c("TRENTON A", "TRENTON AWOS", "BELLEVILLE", "BELLEVILLE OWRC", "BELLEVILLE PAR LAB","BLOOMFIELD", "BLOOMFIELD WEST", "PICTON", "PICTON A", "CRESSY", "KINGSTON (AUT)", "KINGSTON A1", "KINGSTON A2", "KINGSTON A3", "CATARAQUI TS", "HARTINGTON", "GODFREY")
 names(weatherstn) <- c(Stn_names)
   
-  
 #Adding pcp as a function
 add_pcp <- function(stnNo,total)
 {
   temp_q <- weather_dl(station_ids = stnNo, start = "1970-01-01", end = "2018-12-24", interval="day", string_as = NULL)
- 
   
   #temp_q <-temp_q[,c("station_name", "station_id", "date", "total_precip", "total_rain", "total_snow")]
   temp_q <-temp_q[,c("date", "total_precip")]
@@ -154,7 +144,6 @@ add_pcp <- function(stnNo,total)
   total <- merge(total,temp_q,by = "Date",all.x = TRUE)
   return(total)
   }
-  
   
 #actual processing a list of stations
 for (i in 1:length(weatherstn)) {
@@ -187,7 +176,6 @@ Month<-format(total$Date,"%m")
 #Extract month from the date column in the df
 total= cbind(total, Month)
 #Add Month to the df
-
 
 getwd()
 QPCP <- data.frame(dget(file = "total2.dat"))
@@ -245,3 +233,7 @@ sp <- ggplot(dataPlot, aes(x = dataPlot$ln_pcp_5126_2d , y = dataPlot$ln_q_X02HM
   #stat_smooth(method = lm, se = FALSE, colour = "black")
 sp
 ggsave(sp, filename = "5126_2d vs 02HM002.png")
+
+#to plot two figures on one layout use this package: 
+library("gridExtra")
+figureComb <-  grid.arrange(p.heat.all, p.heat.Growth, ncol = 1, nrow = 2)
