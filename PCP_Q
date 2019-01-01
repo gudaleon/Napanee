@@ -94,19 +94,11 @@ add_weather <- function(stnNa,final)
 + return (final)
 + }
 
-##################
-#weather data
-#extract a list of weather stations
-
+#weather data # extract a list of weather stations
 StationID<- rclimateca::ec_climate_locations_all
 #plot stations by stationID 
  write.csv(list,file = "weatherStn.csv")
- 
-#select statons of interest by stationID
-
-##################
-
-#Extract all stations:
+#Extract all weather stations:
 StationID <- rclimateca::ec_climate_locations_all
 list <- data.frame(BoQ_Weather_Stn)
 stn <- list$station_id
@@ -223,6 +215,7 @@ library(DataCombine)
 
 subsetTemp = subsetTemp %>%
   mutate(pcp_5126_2d = rollmean(x = .$X5126, 2, align = "right", fill = NA))
+  # mutate(pcp_5126_2d = rollmean(x = .$X5126, 2, align = "center", fill = NA))
 subsetTemp$ln_pcp_5126_2d <- log10(subsetTemp$pcp_5126_2d + 0.001)
 subsetTemp %>% select(ln_pcp_5126_2d, ln_q_X02HM002) %>% filter(.$ln_pcp_5126_2d !=-3) -> dataPlot
 
@@ -235,5 +228,4 @@ sp
 ggsave(sp, filename = "5126_2d vs 02HM002.png")
 
 #to plot two figures on one layout use this package: 
-library("gridExtra")
-figureComb <-  grid.arrange(p.heat.all, p.heat.Growth, ncol = 1, nrow = 2)
+library("gridExtra")#
