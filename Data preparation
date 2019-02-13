@@ -1,0 +1,125 @@
+library(data.table)
+
+
+QPCP0 <- data.frame(dget(file = "total2USe.dat")) #use downloaded flow and pcp station data
+setDT(QPCP0)
+QPCP0<-QPCP0[,-c("X02HM002.y", "X02HM003.y")] #omit duplicated stations
+
+QPCP0$X02HM002.x<-QPCP0$X02HM002.x/181/1000*3600*24 # to convert m3/s to mm/d for all flow stations
+QPCP0$X02HM003.x<-QPCP0$X02HM003.x/907/1000*3600*24 
+QPCP0$X02HM007<-QPCP0$X02HM007/700/1000*3600*24
+QPCP0$X02HM001<-QPCP0$X02HM001/777/1000*3600*24
+QPCP0$X02HM010<-QPCP0$X02HM010/532/1000*3600*24
+QPCP0$X02HL102<-QPCP0$X02HL102/160/1000*3600*24
+QPCP0$X02HE003<-QPCP0$X02HE003/32/1000*3600*24
+QPCP0$X02HE001<-QPCP0$X02HE001/29.3/1000*3600*24
+QPCP0$X02HM011<-QPCP0$X02HM011/57.8/1000*3600*24
+QPCP0$X02HM006<-QPCP0$X02HM006/144/1000*3600*24
+QPCP0$X02HM005<-QPCP0$X02HM005/160/1000*3600*24
+QPCP0$X02KF016<-QPCP0$X02KF016/359/1000*3600*24
+#area = km2  
+
+
+
+range_water_year_prev <- 1:5  #specify the water year 
+range_PeriodGrowth <- 6:10    #specify the growh period 
+range_rolling_width <- 2:15   #specify the moving average lengths 
+
+QPCP<-QPCP0  #duplicate dataset. Will modify QPCP from now
+
+QPCP[, Month := lubridate::month(Date)] # Add Month column. ':=' creates a column in DT 
+QPCP[, Year := lubridate::year(Date)]  #add year column 
+QPCP[, Year_water := Year - (Month %in% range_water_year_prev)] #add water year column
+QPCP[, PeriodGrowth := (Month %in% range_PeriodGrowth) + 0] #add growing period
+
+#split the Q and PCP data 
+QPCP_p<-QPCP[, c(1,14:26)] # precip dataset 
+QPCP_q<-QPCP[, c(1:13,25,26)] # flow dataset
+
+
+QPCP <- melt.data.table(QPCP,id.vars=c("Year","Month","Date","Year_water","PeriodGrowth"), #melt orginal dataset (O moving avg)
+                        variable.factor=FALSE, variable.name = "Station")
+
+QPCP_p <- melt.data.table(QPCP_p,id.vars=c("Year","Month","Date"),          #melt precip dataset
+                          variable.factor=FALSE, variable.name = "Station")
+
+QPCP_q<-melt.data.table(QPCP_q,id.vars=c("Year","Month","Date"),            #melt flow dataset
+                        variable.factor=FALSE, variable.name = "Station")
+
+
+#function that will tell us which years we can perform moving avg on (if there is any NA in the middle of the dataset, moving avg will not be calcualted for that year)
+Rolling <- function(QPCP_p, nrows_range, ..., NAcontrol=FALSE) {
+  data <- copy(QPCP_p)
+  setnames(data, names(data)[1:2],c("Date","value"))
+  
+  na_loc <- which(is.na(data$value))
+  
+  if (NAcontrol) {
+    if (all(is.na(data$value))) {
+      return(data.table(date=NA + data$Date[1], width=NA_integer_, value=NA_real_, 
+                        N=length(data$value), NAs=length(data$value)))
+    } 
+    
+    if (!all(!is.na(data$value))) {
+      first_dat <- min(which(!is.na(data$value)))
+      last_dat <- max(which(!is.na(data$value)))
+      if (any(na_loc %in% first_dat:last_dat)) {
+        return(data.table(date=NA + data$Date[1], 
+                          width=NA_integer_, value=NA_real_, 
+                          N=length(data$value), NAs=length(na_loc)))
+      }
+    }
+  }
+  ld <- lapply(nrows_range, function(x) zoo::rollmean(data$value, x, ...)) # center before and after for whole year.
+  dt <- rbindlist(lapply(seq_along(nrows_range), 
+                         function(i) data.table(date=data$Date, width=nrows_range[i], value=ld[[i]])))
+  dt[,N := length(data$value)]
+  dt[,NAs := length(na_loc)]
+  return(dt)
+}
+
+#moving avg for pcp 
+QPCP_p2<-QPCP_p[order(Station,Year,Date)][,by=.(Station),Rolling(.SD[,.(Date,value)],
+                                                                 range_rolling_width, 
+                                                                 align = "right", fill = NA)]
+setnames(QPCP_p2, "date", "Date")
+#colnames(QPCP_p2)[2]<-"Date" #make sure the date headings are the same. Will help in merging later
+#colnames(QPCP_q2)[2]<-"Date"
+QPCP_pF<- rbindlist(list(QPCP_p[,.(Date,width=1,value,
+                                   N=.N,NAs=sum(is.na(value))),keyby=Station], 
+                         QPCP_p2))
+
+if (FALSE) {
+  # 
+  if (nrow(QPCP_pF[,.(n=.N, nr=nrow(.SD), nc=ncol(.SD)),by=.(Station,width)][
+    ,by=Station,.(n=length(unique(n)))][n>1]) > 0) stop("REVIEW DATASET")
+  
+}
+rm(QPCP_p2,QPCP_p,QPCP_p3)
+
+
+#X02HM003.x X4859
+link_stations <- fread(
+"flow rain
+X02HM002.x X4287
+X02HM005 X4287
+X02HM005 X4859")
+
+
+# linking the variables
+
+data <- QPCP_pF[link_stations, on=c(Station="rain")][
+                QPCP_q, on=c(flow="Station", "Date"),nomatch=0]
+data[,by=.(Station,flow,width),.(n=.N)]
+setnames(data, "Station", "rain")
+setnames(data, "value", "rain_value")
+setnames(data, "i.value", "flow_value")
+data[, log10_rain_val := log10(rain_value+0.001)]
+data[, log10_flow_val := log10(flow_value+0.001)]
+
+GS<- data[Month>=5 & Month<=10] #create dataset for Growing Season 
+
+data[, Week := lubridate::week(Date)]
+data[, day := lubridate::day(Date)]
+sub<-GS[flow=="X02HM005" & rain=="X4859" & width==4,]
+write.csv(sub, file="X02HM005 X4859 GS-WINBUGS-MISSING YEARS.csv")
