@@ -121,5 +121,26 @@ GS<- data[Month>=5 & Month<=10] #create dataset for Growing Season
 
 data[, Week := lubridate::week(Date)]
 data[, day := lubridate::day(Date)]
-sub<-GS[flow=="X02HM005" & rain=="X4859" & width==4,]
-write.csv(sub, file="X02HM005 X4859 GS-WINBUGS-MISSING YEARS.csv")
+
+sub<-GS[flow=="X02HM005" & precip=="X4287" & width==1]            # select station combination and lags
+sub2<-sub[complete.cases(sub[ ,precip_value]),]                   # omit rows in predictor var with NAs
+
+Flow<-unclass(as.vector(unlist(sub2[,ln_flow_val])))              # extract variables 
+Precip<-unclass(as.vector(unlist(sub2[,ln_precip_val])))
+Year<-unclass(as.vector(unlist(sub2[,Year_WB])))
+Week<-unclass(as.vector(unlist(sub2[,Week_WB])))
+K=length(sub2$Year_WB)                                   
+L=max(sub2[,Year_WB])
+M= max(sub2[,Week_WB])
+
+x<-sprintf("%.15f",Precip)                                        #prevent conversion to the scientific notation
+#any(grepl("1", x))                                               
+#any(grepl("e", x))                                               #check if we still have exponents in data
+dat<-list(K=K, L=L, M=M, Year= Year, Week= Week, Flow=Flow, Precip=x)   #put variables together, separated by commas 
+data<-capture.output(dput(dat, control = c("keepNA", "niceNames")))     #keep the variable headings and convert it into winBUGs format
+data2<-gsub('"',"",data)                                                #omit the commas added in the process. 
+
+writeLines(data2, "X02HM005_X4287_data.txt")                            #save as a text file
+
+
+
