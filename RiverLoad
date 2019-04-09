@@ -1,0 +1,12 @@
+#https://github.com/VeronicaNava/RiverLoad
+
+
+devtools::install_github("VeronicaNava/RiverLoad")
+
+library(RiverLoad)
+data("flow.data1","conc.data1")
+head(conc.data1)
+head(flow.data1)
+union<-db.union(flow.data1, conc.data1)
+beale.periodM<-beale.period(union, 2, "month")
+beale.periodY<-beale.period(union, 2, "year")
